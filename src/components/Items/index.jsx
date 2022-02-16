@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Grid } from "../../container/grid";
+import { Card } from "../card";
+import { Overlay } from "../Overlay";
 
 const items = [
   {
@@ -25,19 +29,29 @@ const items = [
 ];
 
 const Items = () => {
+  const [isOpened, setIsOpened] = useState(false);
+
+  const handleSelect = () => {
+    setIsOpened(!isOpened);
+  };
+
   return (
-    <>
-      <h1>Shop Online</h1>
-      {items.map((item) => (
-        <ul key={item.id}>
-          <li>Name: {item.name}</li>
-          <li>Price: {`${item.price} ${item.currency}`} </li>
-          <li>
-            <img src={item.img} alt="phone" />
-          </li>
-        </ul>
-      ))}
-    </>
+    <Wrapper>
+      <div className="item-list">
+        <h1>Shop Online</h1>
+        <Grid>
+          {items.map((item, index) => (
+            <div key={index}>
+              <Card key={item.id} item={item} handleSelect={handleSelect} />
+            </div>
+          ))}
+        </Grid>
+      </div>
+      {isOpened && <Overlay />}
+    </Wrapper>
   );
 };
+
 export default Items;
+
+const Wrapper = styled.div``;

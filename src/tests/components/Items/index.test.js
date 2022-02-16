@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Items from "../../../components/Items";
+import userEvent from "@testing-library/user-event";
 
 test("renders items list", () => {
   render(<Items />);
@@ -34,9 +35,9 @@ const items = [
 
 test.each(items)("renders list of items", (label) => {
   render(<Items />);
-  expect(screen.getByText(`Name: ${label.name}`)).toBeInTheDocument();
+  expect(screen.getByText(`${label.name}`)).toBeInTheDocument();
   expect(
-    screen.getByText(`Price: ${label.price} ${label.currency}`)
+    screen.getByText(`${label.price} ${label.currency}`)
   ).toBeInTheDocument();
 });
 
@@ -44,5 +45,33 @@ test("renders image", () => {
   render(<Items />);
   const image = screen.getAllByRole("img")[0];
   expect(image).toHaveAttribute("src", items[0].img);
-  expect(image).toHaveAttribute("alt", "phone");
+  expect(image).toHaveAttribute("alt", "Denim Jeans");
 });
+
+test("renders add to cart button", () => {
+  render(<Items />);
+  const button = screen.getAllByRole("button", {name: /Add to cart/i})[0];
+  expect(button).toBeInTheDocument();
+});
+
+test("renders add to cart button for every list item", () => {
+  render(<Items />);
+  const button = screen.getAllByRole('button')
+  expect(button.length).toEqual(3)
+});
+
+test("renders a dialogue box onClick of button", () => {
+  render(<Items />);
+  const button = screen.getAllByRole("button", {name: /Add to cart/i})[0];
+  userEvent.click(button)
+  const box = screen.getByText(/Checkout/i)
+  expect(box).toBeInTheDocument()
+});
+
+test("Should not render a dialogue box if button is not clicked", () => {
+  render(<Items />);
+  const box = screen.queryByText(/Checkout/i)
+  expect(box).not.toBeInTheDocument()
+});
+
+
